@@ -28,3 +28,5 @@ print 'unsmall has shape', unsmall.shape
 # encountered.
 unsmall = cv2.pyrUp(small, dstsize=img.shape)
 print 'unsmall has shape', unsmall.shape
+
+print 'Rachel is a cool bean'
