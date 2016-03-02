@@ -43,6 +43,7 @@ def pyr_build(Gi):
   lp.append(Gi)
   cv2.imshow(win, Gi/255.0)
   while cv2.waitKey(15) < 0: pass
+  
   return lp
 
 #########################
