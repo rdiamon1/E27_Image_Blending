@@ -1,5 +1,5 @@
 """
-Rachel and Julie
+Rachel Diamond and Julie Harris
 
 Project 2
 """
@@ -7,21 +7,21 @@ Project 2
 import cv2
 import numpy
 
-NUM_PYR = 15 #number of iterartions in the pyramid
+NUM_PYR = 3 #number of iterartions in the pyramid
 
+win = 'Image Window'
+cv2.namedWindow(win)
 ########################
 
 def pyr_build(Gi):
 
   lp = []
-  h = Gi.shape[0]
-  w = Gi.shape[1]
 
-  win = 'Image Window'
-  cv2.namedWindow(win)
 
   for i in range (NUM_PYR):
     #scale it down
+    h = Gi.shape[0]
+    w = Gi.shape[1]
     Gi1 = cv2.pyrDown(Gi)
     print 'Gi1 has shape', Gi1.shape
 
@@ -29,8 +29,8 @@ def pyr_build(Gi):
     uGi1 = cv2.pyrUp(Gi1, dstsize=(w, h))
     print 'unsmall has shape', uGi1.shape
 
-    Gi.astype(numpy.float32)
-    uGi1.astype(numpy.float32)
+    Gi = Gi.astype(numpy.float32)
+    uGi1 = uGi1.astype(numpy.float32)
     Li = Gi - uGi1
     lp.append(Li)
 
@@ -38,17 +38,19 @@ def pyr_build(Gi):
 
     while cv2.waitKey(15) < 0: pass
 
-    Gi = uGi1
+    Gi = Gi1
+
+  lp.append(Gi)
+  cv2.imshow(win, Gi/255.0)
+  while cv2.waitKey(15) < 0: pass
   return lp
 
 #########################
 def pyr_reconstruct(lp):
 
-    win = 'Image Window'
-    cv2.namedWindow(win)
-
     Rn = lp[-1]
-    h,w,d = Rn.shape
+    h = Rn.shape[0]
+    w = Rn.shape[1]
     image = Rn
 
     Ri = Rn
@@ -62,13 +64,14 @@ def pyr_reconstruct(lp):
         image += Ri1
         Ri = Ri1
 
-    image.astype(numpy.uint8)
+    image = image.astype(numpy.uint8)
     cv2.imshow(win, image)
     while cv2.waitKey(15) < 0: pass
 
 #########################
 def main():
     G0 = cv2.imread('Golden_Retriever.JPG')
+    #G0 = cv2.cvtColor(G0, cv2.COLOR_RGB2GRAY)
 
     h = G0.shape[0]
     w = G0.shape[1]
