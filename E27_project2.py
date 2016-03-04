@@ -40,44 +40,65 @@ def pyr_build(Gi):
 
     Gi = Gi1
 
+  Gi = Gi.astype(numpy.float32)
   lp.append(Gi)
   cv2.imshow(win, Gi/255.0)
   while cv2.waitKey(15) < 0: pass
-  
+
   return lp
 
 #########################
 def pyr_reconstruct(lp):
 
-    Rn = lp[-1]
-    h = Rn.shape[0]
-    w = Rn.shape[1]
-    image = Rn
+    Ri = lp[-1]
 
-    Ri = Rn
     for i in range(len(lp)-1,0,-1):
-        #uRi = cv2.pyrUp(Ri, dstsize=(w, h))
 
-        uRi = cv2.pyrUp(Ri)
-        uRi = cv2.resize(uRi,(w,h))
+        h = Ri.shape[0]
+        w = Ri.shape[1]
 
-        Ri1 = uRi + lp[i]
-        image += Ri1
+        print "h = ", h
+        print "w = ", w
+
+        uRi = cv2.pyrUp(Ri, dstsize=(2*w, 2*h))
+
+        print "uRi h = ", uRi.shape[0]
+        print "uRi w = ", uRi.shape[1]
+
+        print "lp[i-1] h = ", lp[i-1].shape[0]
+        print "lp[i-1] w = ", lp[i-1].shape[1]
+
+        Ri1 = uRi + lp[i-1]
+
         Ri = Ri1
 
-    image = image.astype(numpy.uint8)
-    cv2.imshow(win, image)
+        print "iteration = ", i
+
+    Ri = Ri.astype(numpy.uint8)
+    cv2.imshow(win, Ri)
     while cv2.waitKey(15) < 0: pass
 
 #########################
+def alpha_blend(A, B, alpha):
+    A = A.astype(alpha.dtype)
+    B = B.astype(alpha.dtype)
+    # if A and B are RGB images, we must pad
+    # out alpha to be the right shape
+    if len(A.shape) == 3:
+        alpha = numpy.expand_dims(alpha, 2)
+    return A + alpha*(B-A)
+
+#########################
 def main():
-    G0 = cv2.imread('Golden_Retriever.JPG')
-    #G0 = cv2.cvtColor(G0, cv2.COLOR_RGB2GRAY)
+    G0 = cv2.imread('Golden_Retreiver02.JPG')
 
     h = G0.shape[0]
     w = G0.shape[1]
 
     lp = pyr_build(G0)
     pyr_reconstruct(lp)
+
+    imgA = cv2.imread('cat_edit02.jpg')
+    imgB = cv2.imread('dog_edit02.jpg')
 
 main()
