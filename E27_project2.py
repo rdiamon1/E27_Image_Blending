@@ -9,6 +9,8 @@ import numpy
 
 NUM_PYR = 3 #number of iterartions in the pyramid
 
+COLOR = (0, 0, 0)
+
 win = 'Image Window'
 cv2.namedWindow(win)
 ########################
@@ -16,7 +18,6 @@ cv2.namedWindow(win)
 def pyr_build(Gi):
 
   lp = []
-
 
   for i in range (NUM_PYR):
     #scale it down
@@ -86,11 +87,37 @@ def alpha_blend(A, B, alpha):
     # out alpha to be the right shape
     if len(A.shape) == 3:
         alpha = numpy.expand_dims(alpha, 2)
+
     return A + alpha*(B-A)
 
 #########################
+def img_combine(A, B):
+
+    pt1 = (0,0)
+    pt2 = (256, 512)
+
+    pt3 = (256, 0)
+    pt4 = (512, 512)
+
+    for i in range (NUM_PYR):
+        pt2 = pt2 / 2
+        pt3 = pt3 / 2
+        pt4 = pt4 / 2
+
+        maskA = cv2.rectangle(A, pt1, pt2, COLOR)
+        maskB = cv2.rectangle(B, pt3, pt4, COLOR)
+
+        cv2.imshow("mask", maskA)
+        while cv2.waitKey(15) < 0: pass
+
+        cv2.imshow("mask", maskB)
+        while cv2.waitKey(15) < 0: pass
+
+
+
+#########################
 def main():
-    G0 = cv2.imread('Golden_Retreiver02.JPG')
+    G0 = cv2.imread('Golden_Retriever02.JPG')
 
     h = G0.shape[0]
     w = G0.shape[1]
@@ -98,7 +125,27 @@ def main():
     lp = pyr_build(G0)
     pyr_reconstruct(lp)
 
-    imgA = cv2.imread('cat_edit02.jpg')
-    imgB = cv2.imread('dog_edit02.jpg')
+    imgA = cv2.imread('cat_square.JPG')
+    imgB = cv2.imread('dog_square.JPG')
+
+    pt1 = (0,0)
+    pt2 = (256, 512)
+
+    pt3 = (256, 0)
+    pt4 = (512, 512)
+
+    maskA = cv2.rectangle(imgA, pt1, pt2, COLOR)
+
+    maskB = cv2.rectangle(imgB, pt3, pt4, COLOR)
+
+#    cv2.imshow("mask", maskA)
+#    while cv2.waitKey(15) < 0: pass
+
+#    cv2.imshow("mask", maskB)
+#    while cv2.waitKey(15) < 0: pass
+
+    img_combine(imgA, imgB)
+
+#    alpha_blend(imgA, imgB, alph)
 
 main()
