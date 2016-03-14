@@ -110,8 +110,8 @@ def makeAlpha(A):
 
 #########################
 def Hybrid(A, B):
-    kA = 1
-    kB = 1
+    kA = 2
+    kB = 1.8
     sigmaA = 7
     sigmaB = 4
 
@@ -123,8 +123,14 @@ def Hybrid(A, B):
     # low-pass filter
     Anew = cv2.GaussianBlur(A, (0,0), sigmaA)
 
+    cv2.imshow('Anew', Anew)
+    while cv2.waitKey(15) < 0: pass
+
     # high-pass filter
     Bnew = B - cv2.GaussianBlur(B, (0,0), sigmaB)
+
+    cv2.imshow('Bnew', Bnew)
+    while cv2.waitKey(15) < 0: pass
 
     hybridimg = (kA * Anew) + (kB * Bnew)
 
