@@ -95,7 +95,7 @@ def makeAlpha(A):
     height = A.shape[0]
     width = A.shape[1]
 
-    steepness = 50.0/width #increase numerator to decrease blend width
+    steepness = 200.0/width #increase numerator to decrease blend width
     print 'steepness = %f'%(steepness)
     x = numpy.arange(width)
     #midpt = width*0.5*numpy.ones(width)
@@ -128,6 +128,9 @@ def Hybrid(A, B):
 
     # high-pass filter
     Bnew = B - cv2.GaussianBlur(B, (0,0), sigmaB)
+    xx,Bnew = cv2.threshold(Bnew,0,0,cv2.THRESH_TOZERO)
+    print 'Anew range:', Anew.min(), Anew.max()
+    print 'Bnew range:', Bnew.min(), Bnew.max()
 
     cv2.imshow('Bnew', Bnew)
     while cv2.waitKey(15) < 0: pass
