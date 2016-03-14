@@ -69,11 +69,10 @@ def blend(A,B):
         width = A.shape[0]
 
         steepness = 50.0/width #increase numerator to decrease blend width
-
+        print 'steepness = %f'%(steepness)
         x = range(width)
         midpt = width*0.5*numpy.ones(width)
         alpha = 1/(1+numpy.exp(-steepness*(x-midpt)))
-
         blended_img = alpha_blend(A,B,alpha)
 
         return blended_img
@@ -91,10 +90,16 @@ def main():
     #blend the pyramids
     for i in range(len(lpA)):
         lpAB.append(blend(lpA[i],lpB[i]))
+        #cv2.imshow("blend", lpA[i])
+        #while cv2.waitKey(15) < 0: pass
 
     #reconstruct and show hybrid image
     blended_img = pyr_reconstruct(lpAB)
     cv2.imshow("blend", blended_img)
+    while cv2.waitKey(15) < 0: pass
+
+    naive_blend = blend(imgA,imgB)*.004
+    cv2.imshow("blend", naive_blend)
     while cv2.waitKey(15) < 0: pass
 
 main()

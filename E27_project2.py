@@ -146,7 +146,7 @@ def blend(A,B):
         alpha = 1/(1+numpy.exp(-steepness*(x-midpt)))
 
         blended_img = alpha_blend(A,B,alpha)
-        cv2.imshow("blend", blended_img)
+        cv2.imshow("blend", 0.5 + 0.5 * (blended_img / numpy.abs(blended_img).max()))
         while cv2.waitKey(15) < 0: pass
 
         return blended_img
