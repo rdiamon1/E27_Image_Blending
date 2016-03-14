@@ -78,9 +78,31 @@ def blend(A,B):
         return blended_img
 
 #########################
+def Hybrid(A, B):
+    kA = 1
+    kB = 2
+    sigmaA = 7
+    sigmaB = 4
+
+    
+
+    # lo-pass filter
+    Anew = cv2.GaussianBlur(A, (0,0), sigmaA)
+
+    # high-pass filter
+    Bnew = B - cv2.GaussianBlur(B, (0,0), sigmaB)
+
+    hybridimg = (kA * Anew) + (kB * Bnew)
+
+    return hybridimg
+
+#########################
 def main():
     imgA = cv2.imread('cat_square.JPG')
     imgB = cv2.imread('dog_square.JPG')
+
+    imgC = cv2.imread('puppy_face.jpg')
+    imgD = cv2.imread('Julie_face.jpg')
 
     #make two Lapacian pyramids
     lpA = pyr_build(imgA)
@@ -100,6 +122,10 @@ def main():
 
     naive_blend = blend(imgA,imgB)*.004
     cv2.imshow("blend", naive_blend)
+    while cv2.waitKey(15) < 0: pass
+
+    hybrid_img = Hybrid(imgC, imgD)
+    cv2.imshow("hybrid", hybrid_img)
     while cv2.waitKey(15) < 0: pass
 
 main()
