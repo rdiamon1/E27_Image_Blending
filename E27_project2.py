@@ -85,38 +85,76 @@ def alpha_blend(A, B, alpha):
     B = B.astype(alpha.dtype)
     # if A and B are RGB images, we must pad
     # out alpha to be the right shape
+    print "alpha = ", alpha.shape
     if len(A.shape) == 3:
         alpha = numpy.expand_dims(alpha, 2)
+
+    print "A = ", A.shape
+    print "B = ", B.shape
+    print "alpha = ", alpha.shape
 
     return A + alpha*(B-A)
 
 #########################
 def img_combine(A, B):
+    '''A and B are two images: h-w-3 arrays of uint8 numbers'''
 
-    pt1 = (0,0)
+    pt1 = (0,0) #corners for image A mask
     pt2 = (256, 512)
 
-    pt3 = (256, 0)
+    pt3 = (256, 0) #corners for image B mask
     pt4 = (512, 512)
+    pts = [pt1,pt2,pt3,pt4]
 
+    """
     for i in range (NUM_PYR):
-        pt2 = pt2 / 2
-        pt3 = pt3 / 2
-        pt4 = pt4 / 2
+        newpts = []
+        for point in pts:
+            newpoint = (int(point[0]*0.5),int(point[1]*0.5))
+            print newpoint
+            newpts.append(newpoint)
+        pts = newpts
 
-        maskA = cv2.rectangle(A, pt1, pt2, COLOR)
-        maskB = cv2.rectangle(B, pt3, pt4, COLOR)
+        maskA = cv2.rectangle(A, pts[0], pts[1], COLOR)
+        maskB = cv2.rectangle(B, pts[2], pts[3], COLOR)
 
-        cv2.imshow("mask", maskA)
+        cv2.imshow("maskA", maskA)
+        while cv2.waitKey(15) < 0: pass
+        cv2.imshow("maskB", maskB)
+        while cv2.waitKey(15) < 0: pass
+    """
+
+    #make two Lapacian pyramids
+    lpA = pyr_build(A)
+    print "A pyramid built"
+    lpB = pyr_build(B)
+    lpAB = []
+
+    for i in range(len(lpA)):
+        lpAB.append(blend(lpA[i],lpB[i]))
+
+    pyr_reconstruct(lpAB)
+
+#########################
+def blend(A,B):
+        width = A.shape[0]
+
+        steepness = 50.0/width #increase numerator to decrease blend width
+
+        x = range(width)
+        midpt = width*0.5*numpy.ones(width)
+        alpha = 1/(1+numpy.exp(-steepness*(x-midpt)))
+
+        blended_img = alpha_blend(A,B,alpha)
+        cv2.imshow("blend", blended_img)
         while cv2.waitKey(15) < 0: pass
 
-        cv2.imshow("mask", maskB)
-        while cv2.waitKey(15) < 0: pass
-
+        return blended_img
 
 
 #########################
 def main():
+    """
     G0 = cv2.imread('Golden_Retriever02.JPG')
 
     h = G0.shape[0]
@@ -124,7 +162,7 @@ def main():
 
     lp = pyr_build(G0)
     pyr_reconstruct(lp)
-
+    """
     imgA = cv2.imread('cat_square.JPG')
     imgB = cv2.imread('dog_square.JPG')
 
@@ -134,15 +172,17 @@ def main():
     pt3 = (256, 0)
     pt4 = (512, 512)
 
+    """
     maskA = cv2.rectangle(imgA, pt1, pt2, COLOR)
 
     maskB = cv2.rectangle(imgB, pt3, pt4, COLOR)
 
-#    cv2.imshow("mask", maskA)
-#    while cv2.waitKey(15) < 0: pass
+    cv2.imshow("mask", maskA)
+    while cv2.waitKey(15) < 0: pass
 
-#    cv2.imshow("mask", maskB)
-#    while cv2.waitKey(15) < 0: pass
+    cv2.imshow("mask", maskB)
+    while cv2.waitKey(15) < 0: pass
+    """
 
     img_combine(imgA, imgB)
 
