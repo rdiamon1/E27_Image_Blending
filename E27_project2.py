@@ -154,7 +154,7 @@ def blend(A,B):
 
 #########################
 def main():
-    """
+
     G0 = cv2.imread('Golden_Retriever02.JPG')
 
     h = G0.shape[0]
@@ -162,7 +162,7 @@ def main():
 
     lp = pyr_build(G0)
     pyr_reconstruct(lp)
-    """
+
     imgA = cv2.imread('cat_square.JPG')
     imgB = cv2.imread('dog_square.JPG')
 
@@ -184,7 +184,7 @@ def main():
     while cv2.waitKey(15) < 0: pass
     """
 
-    img_combine(imgA, imgB)
+#    img_combine(imgA, imgB)
 
 #    alpha_blend(imgA, imgB, alph)
 

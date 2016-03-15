@@ -110,10 +110,10 @@ def makeAlpha(A):
 
 #########################
 def Hybrid(A, B):
-    kA = 2
-    kB = 1.8
-    sigmaA = 7
-    sigmaB = 4
+    kA = 1
+    kB = 1
+    sigmaA = 9
+    sigmaB = 6
 
     A = A.astype(numpy.float32)
     B = B.astype(numpy.float32)
@@ -127,10 +127,14 @@ def Hybrid(A, B):
     while cv2.waitKey(15) < 0: pass
 
     # high-pass filter
-    Bnew = B - cv2.GaussianBlur(B, (0,0), sigmaB)
+    Bintr = cv2.GaussianBlur(B, (0,0), sigmaB)
+    Bnew = B - Bintr
     xx,Bnew = cv2.threshold(Bnew,0,0,cv2.THRESH_TOZERO)
     print 'Anew range:', Anew.min(), Anew.max()
     print 'Bnew range:', Bnew.min(), Bnew.max()
+
+    cv2.imshow('Bintr', Bintr)
+    while cv2.waitKey(15) < 0: pass
 
     cv2.imshow('Bnew', Bnew)
     while cv2.waitKey(15) < 0: pass
@@ -189,6 +193,11 @@ def main():
     print 'hybrid_img range:', hybrid_img.min(), hybrid_img.max()
     cv2.imshow("hybrid", hybrid_img)
     #cv2.imshow("hybrid", 0.5 + 0.5 * (hybrid_img / numpy.abs(hybrid_img).max()))
+    while cv2.waitKey(15) < 0: pass
+
+    lp_hybrid = pyr_build(hybrid_img)
+    laplace_hybrid = pyr_reconstruct(lp_hybrid)
+    cv2.imshow("laplace hybrid", laplace_hybrid)
     while cv2.waitKey(15) < 0: pass
 
 main()
