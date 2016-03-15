@@ -184,7 +184,7 @@ def main():
     while cv2.waitKey(15) < 0: pass
     """
 
-#    img_combine(imgA, imgB)
+    img_combine(imgA, imgB)
 
 #    alpha_blend(imgA, imgB, alph)
 
