@@ -1,7 +1,8 @@
 """
 Rachel Diamond and Julie Harris
+Project 2: Image blending
 
-Project 2
+OLD VERSION--> merged with short.py in file E27_project02.py
 """
 
 import cv2
